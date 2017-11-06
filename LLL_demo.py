@@ -19,7 +19,11 @@ The PI source file contains the sequence pi_1, pi_2, ... as defined in [2].
 import numpy as np
 import re
 
-PATH = "Lattices/challenge-200.txt"  # small challenge with dimension 200
+# PATH = "Lattices/challenge-200.txt"  # small challenge with dimension 200
+PATH = "Lattices/challenge-200.txt"
+
+def Gram_Schmidt(Basis):
+	return Basis
 
 def main():
 	f = open(PATH, 'r')  # lattice file containing unreduced basis
@@ -27,21 +31,24 @@ def main():
 	reference_dimesion = int(f.readline())
 	modulus_q = int(f.readline())
 
-	f.readline()
-	second_last_line, last_line = f.readline(), f.readline()
 	B = []
+	print("Start Loop")
 	for line in f:
-		#print(second_last_line)
-		basis_vector = re.split("\ |[|]", second_last_line)
-		basis_vector = basis_vector[1:challenge_dimension-1]
+		basis_vector = re.split("\W", line)
+		# print(basis_vector)
+		basis_vector = [ x for x in basis_vector if x.isdigit() ]  # clean basis vector
+		# print(basis_vector)
 		basis_vector = [int(v) for v in basis_vector]
-		B.append(basis_vector)
-		second_last_line = last_line
-		last_line = line
-		# print(re.split(',|[|]|\n', line)[0])
-	print(B)
-	print(LLL(B,delta=1.0/4))
+		# print(basis_vector)
+		if (len(basis_vector) > 0):
+			B.append(basis_vector)
+	print("End of Loop")
+
 	f.close()
+
+	Basis = np.asarray(B, dtype=int)
+	print(Basis.shape)
+	assert(np.linalg.det(Basis) != 0)
 
 def LLL(B,delta=1.0/4):
         B_G = []
@@ -66,15 +73,4 @@ def LLL(B,delta=1.0/4):
                         LLL(n,delta=1.0/4)
         return B
 
-                       
 main()
-
-
-
-
-
-
-
-
-
-
