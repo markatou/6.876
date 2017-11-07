@@ -51,26 +51,15 @@ def main():
 	assert(np.linalg.det(Basis) != 0)
 
 def LLL(B,delta=1.0/4):
-        B_G = []
-        B_n = []
-        m = {}
-
-        for i in range(len(B)):
-                for j in range(i):
-                        m[(i,j)] = np.inner(B[i],B_G[j])/np.inner(B_G[j],B_G[j])
-                if i == 0:
-                        B_G.append(B[0])
-                        B_n.append(B[0])
-                else:
-                        B_G.append(B[i] - round(m[(i,i-1)])*B_G[i-1])
-                        B_n.append(B[i] - round(m[(i,i-1)])*B[i-1])                       
-        for i in range(len(B)-1):
+		while True:
+        		B, m = Leo_function(B)                             
+        		for i in range(2, len(B)+1):
+                		for j in reversed(range(1,i)):
+                        		B[i] = B[i]-m[i,j]B[i-1]
                 if np.linalg.norm(B_G[i+1])**2 < (delta - m[i+1,i]**2)*np.linalg.norm(B_G[i])**2:
-                        n = B[:i-1]
-                        n.append(B[i+1])
-                        n.append(B[i])
-                        n.append(B[i+1:])
-                        LLL(n,delta=1.0/4)
+                         //Swap
+                                		
+
         return B
 
 main()
