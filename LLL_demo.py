@@ -45,21 +45,26 @@ def main():
 	print("End of Loop")
 
 	f.close()
-
+	
 	Basis = np.asarray(B, dtype=int)
 	print(Basis.shape)
 	assert(np.linalg.det(Basis) != 0)
 
 def LLL(B,delta=1.0/4):
-		while True:
-        		B, m = Leo_function(B)                             
-        		for i in range(2, len(B)+1):
-                		for j in reversed(range(1,i)):
-                        		B[i] = B[i]-m[i,j]B[i-1]
-                if np.linalg.norm(B_G[i+1])**2 < (delta - m[i+1,i]**2)*np.linalg.norm(B_G[i])**2:
-                         //Swap
-                                		
-
-        return B
+	for i in range(2, len(B)+1):
+		B_G =B
+		for j in reversed(range(1,i)):
+		    #B[i] = np.subtract(B[i],m[i,j]*B[i-1])
+			B[i-1] = np.subtract(B[i-1],np.multiply(0.5,B[j-1]))
+	for i in range(1,len(B)-1):
+		m = np.inner(B[:,i+1],B_G[:,i])/np.inner(B_G[:,i],B_G[:,i])
+		if np.linalg.norm(B_G[i])**2 < (delta - m**2)*np.linalg.norm(B_G[i-1])**2:
+			for k in range(len(B[:,1])):
+				c = B[i,k]
+				B[i,k] = B[i+1,k]
+				B[i+1,k] = c
+			return B
+			    	
+	return B
 
 main()
