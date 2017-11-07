@@ -29,12 +29,10 @@ def gs_coeff(v1, v2):
 ## Takes in a lattice basis and
 ## returns a Gram-Schmidt orhtogonal basis
 ## All in numpy
-## ref: https://gist.github.com/iizukak/1287876
 def Gram_Schmidt(Basis):
 	(m, n) = Basis.shape
 	GS_Basis = []  # this will store the Gram-Schmidt basis
 	for k in range(n):
-		print("k", k)
 		w = Basis[:, k]  # at the end of the subsequent loop, this will store the 
 		for gs_vec in GS_Basis:
 			proj_vec = map(lambda x : x * gs_coeff(gs_vec, Basis[:, k]), gs_vec)
@@ -81,13 +79,26 @@ def LLL(B,delta=1.0/4):
 			    	
 	return B
 
-main()
+# main()
 ###################################################################################################
 ########################################### TESTS #################################################
 ###################################################################################################
 
+# ref: https://en.wikipedia.org/wiki/
+#		Lenstra%E2%80%93Lenstra%E2%80%93Lov%C3%A1sz_lattice_basis_reduction_algorithm#Example
+def LLL_test():
+	print("\nLLL Test...")
+	test = np.array([[1, -1, 3], [1, 0, 5], [1, 2, 6]])
+	print("OUR OUTPUT:")
+	print(LLL(test))
+	print("\nCORRECT OUTPUT:")
+	print(np.array([[0, 1, -1], [1, 0, 0], [0, 1, 2]]))
+
+# Based on reference implementation here:
+# ref: https://gist.github.com/iizukak/1287876
 def GS_TEST():
-	print("MY OUTPUT:")
+	print("\nGram_Schmidt Test...")
+	print("OUR OUTPUT:")
 	#Test Gram_Schmidt
 	test = np.array([[3.0, 1.0], [2.0, 2.0]])
 	test2 = np.array([[1.0, 1.0, 0.0], [1.0, 3.0, 1.0], [2.0, -1.0, 1.0]])
@@ -99,12 +110,10 @@ def GS_TEST():
 	    return np.dot(v2, v1) / np.dot(v1, v1)
 
 	def multiply(cofficient, v):
-		# return v * cofficient
 	    return map((lambda x : x * cofficient), v)
 
 	def proj(v1, v2):
 	    return multiply(gs_cofficient(v1, v2) , v1)
-	    # return (v1 * gs_cofficient(v1, v2))
 
 	def gs(X):
 	    Y = []
@@ -117,8 +126,13 @@ def GS_TEST():
 	    return Y
 
 	#Test data
+	# the transposes are because we do gram schimdt on columns
+	# while this test originally did gram schmidt on rows
 	test = np.transpose(np.array([[3.0, 1.0], [2.0, 2.0]]))
 	test2 = np.transpose(np.array([[1.0, 1.0, 0.0], [1.0, 3.0, 1.0], [2.0, -1.0, 1.0]]))
 	print np.array(gs(test))
 	print np.array(gs(test2))
-#GS_TEST()  # Uncomment to test gram-schmidt implementation
+
+### TEST CALLS 
+GS_TEST()  # Uncomment to test gram-schmidt implementation
+LLL_test()
