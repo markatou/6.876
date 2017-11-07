@@ -34,6 +34,7 @@ def Gram_Schmidt(Basis):
 	(m, n) = Basis.shape
 	GS_Basis = []  # this will store the Gram-Schmidt basis
 	for k in range(n):
+		print("k", k)
 		w = Basis[:, k]  # at the end of the subsequent loop, this will store the 
 		for gs_vec in GS_Basis:
 			proj_vec = map(lambda x : x * gs_coeff(gs_vec, Basis[:, k]), gs_vec)
@@ -57,12 +58,15 @@ def main():
 	f.close()
 	
 	Basis = np.asarray(B, dtype=int)
+	print(LLL(Basis))
 	assert(np.linalg.det(Basis) != 0)
 
 
 def LLL(B,delta=1.0/4):
+	print("In LLL")
 	for i in range(2, len(B)+1):
-		B_G =B
+		print(i)
+		B_G = Gram_Schmidt(B)
 		for j in reversed(range(1,i)):
 		    #B[i] = np.subtract(B[i],m[i,j]*B[i-1])
 			B[i-1] = np.subtract(B[i-1],np.multiply(0.5,B[j-1]))
@@ -77,7 +81,7 @@ def LLL(B,delta=1.0/4):
 			    	
 	return B
 
-
+main()
 ###################################################################################################
 ########################################### TESTS #################################################
 ###################################################################################################
@@ -117,4 +121,4 @@ def GS_TEST():
 	test2 = np.transpose(np.array([[1.0, 1.0, 0.0], [1.0, 3.0, 1.0], [2.0, -1.0, 1.0]]))
 	print np.array(gs(test))
 	print np.array(gs(test2))
-# GS_TEST()  # Uncomment to test gram-schmidt implementation
+#GS_TEST()  # Uncomment to test gram-schmidt implementation
