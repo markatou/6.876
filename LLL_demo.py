@@ -61,24 +61,22 @@ def main():
 
 
 def LLL(B,delta=1.0/4):
+	#TODO: Set B[0] correctly
 	print("In LLL")
-	B_G = B#Gram_Schmidt(B)
+	B_G = Gram_Schmidt(B)
 	B = compute_LLL_basis(B,B_G)
 	B = Lovasz_consdition(B,B_G,delta)
 	return B
 
 def compute_LLL_basis(B,B_G,m=0):
 	for i in range(1, len(B)):
-		print("Comp",i)
 		for j in reversed(range(1,i)):
-			#B[i] = np.subtract(B[i],m[i,j]*B[i-1])
 			m = np.inner(B[:,i],B_G[:,j])/np.inner(B_G[:,j],B_G[:,j])
 			B[i-1] = np.subtract(B[i-1],np.multiply(m,B[j-1]))
 	return B
 
 def Lovasz_consdition(B,B_G,delta,m=0):
 	for i in range(1,len(B)-1):
-		print("Lov",i)
 		m = np.inner(B[:,i],B_G[:,i-1])/np.inner(B_G[:,i-1],B_G[:,i-1])
 		if np.linalg.norm(B_G[i])**2 < (delta - m**2)*np.linalg.norm(B_G[i-1])**2:
 			for k in range(len(B[:,1])):
