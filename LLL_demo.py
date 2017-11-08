@@ -61,30 +61,31 @@ def main():
 
 
 def LLL(B,delta=1.0/4):
-	#TODO: Set B[0] correctly
+	again = True
 	print("In LLL")
-	B_G = Gram_Schmidt(B)
-	B = compute_LLL_basis(B,B_G)
-	B = Lovasz_consdition(B,B_G,delta)
+	while again:
+		B_G = Gram_Schmidt(B)
+		B = compute_LLL_basis(B,B_G)
+		B,again = Lovasz_consdition(B,B_G,delta)
 	return B
 
-def compute_LLL_basis(B,B_G,m=0):
+def compute_LLL_basis(B,B_G):
 	for i in range(1, len(B)):
-		for j in reversed(range(1,i)):
+		for j in reversed(range(0,i-1)):
 			m = np.inner(B[:,i],B_G[:,j])/np.inner(B_G[:,j],B_G[:,j])
-			B[i-1] = np.subtract(B[i-1],np.multiply(m,B[j-1]))
+			B[:,i] = np.subtract(B[:,i],np.multiply(m,B[:,j]))
 	return B
 
-def Lovasz_consdition(B,B_G,delta,m=0):
-	for i in range(1,len(B)-1):
-		m = np.inner(B[:,i],B_G[:,i-1])/np.inner(B_G[:,i-1],B_G[:,i-1])
-		if np.linalg.norm(B_G[i])**2 < (delta - m**2)*np.linalg.norm(B_G[i-1])**2:
+def Lovasz_consdition(B,B_G,delta):
+	for i in range(0,len(B)-1):
+		m = np.inner(B[:,i+1],B_G[:,i])/np.inner(B_G[:,i],B_G[:,i])
+		if np.linalg.norm(B_G[:,i+1])**2 < (delta - m**2)*np.linalg.norm(B_G[:,i])**2:
 			for k in range(len(B[:,1])):
 				c = B[i,k]
 				B[i,k] = B[i+1,k]
 				B[i+1,k] = c
-				return B
-	return B
+				return B,True
+	return B,False
 
 
 ###################################################################################################
